@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111114" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="BLOK" />
+  <title>Blok | drawingstudys</title>
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@600&family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg:#111114; --bg2:#1a1a1f; --bg3:#222228; --fg:#f4f0ea; --muted:#9a948a; --accent:#e85d04; --gold:#ffba08; --fun:#6d8dff; --line:#2c2c34; --st:env(safe-area-inset-top,0px); --sb:env(safe-area-inset-bottom,0px); }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:"Instrument Sans",system-ui,sans-serif; background:var(--bg); color:var(--fg); max-width:480px; margin:0 auto; min-height:100dvh; padding-top:var(--st); padding-bottom:calc(72px + var(--sb)); }
+    h1,h2,h3 { font-family:"Instrument Serif",Georgia,serif; font-weight:400; }
+    header.app { padding:18px 20px 8px; display:flex; justify-content:space-between; align-items:baseline; }
+    .brand { font-size:28px; letter-spacing:.08em; font-weight:600; font-family:"Instrument Sans",sans-serif; }
+    .brand span { color:var(--accent); }
+    .sub { color:var(--muted); font-size:12px; text-align:right; max-width:55%; }
+    .view { display:none; padding:8px 20px 24px; }
+    .view.on { display:block; }
+    .card { background:var(--bg2); border:1px solid var(--line); border-radius:16px; padding:16px; margin:10px 0; }
+    .card.active { outline:1px solid var(--accent); }
+    .dim { opacity:.4; }
+    .hint { color:var(--muted); font-size:14px; line-height:1.45; }
+    .gold { color:var(--gold); }
+    button { font-family:inherit; border:0; border-radius:12px; padding:12px 16px; font-size:15px; font-weight:600; cursor:pointer; color:#1a0e08; background:var(--accent); min-height:44px; }
+    button.ghost { background:var(--bg3); color:var(--fg); border:1px solid var(--line); }
+    button.warn { background:transparent; color:var(--muted); border:1px solid var(--line); }
+    button.wide { width:100%; margin-top:8px; }
+    button.link { background:none; color:var(--gold); min-height:auto; padding:0; font-size:12px; text-decoration:underline; }
+    .cardbtn { display:block; width:100%; text-align:left; background:var(--bg2); color:var(--fg); border:1px solid var(--line); margin:8px 0; }
+    .cardbtn .hint { display:block; font-weight:400; margin-top:4px; }
+    .rowline { display:flex; justify-content:space-between; gap:8px; align-items:flex-start; }
+    .subcard { background:var(--bg3); border-radius:12px; padding:12px; margin-top:8px; }
+    ol { padding-left:18px; margin:8px 0; }
+    nav.bottom { position:fixed; left:50%; transform:translateX(-50%); bottom:0; width:100%; max-width:480px; display:grid; grid-template-columns:repeat(6,1fr); background:#0d0d10; border-top:1px solid var(--line); padding:8px 4px calc(8px + var(--sb)); z-index:20; }
+    nav.bottom button { background:transparent; color:var(--muted); font-size:10px; font-weight:500; padding:8px 2px; min-height:44px; }
+    nav.bottom button.on { color:var(--gold); }
+    .statgrid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .stat { background:var(--bg2); border-radius:14px; padding:14px; border:1px solid var(--line); }
+    .stat b { display:block; font-size:26px; font-family:"IBM Plex Mono",monospace; }
+    .stat span { color:var(--muted); font-size:12px; }
+    label.field { display:block; margin:10px 0 4px; font-size:13px; color:var(--muted); }
+    input[type=number], input[type=text] { width:100%; background:var(--bg3); border:1px solid var(--line); color:var(--fg); border-radius:10px; padding:10px 12px; font:inherit; min-height:44px; }
+    .toggle { display:flex; align-items:center; justify-content:space-between; margin:12px 0; min-height:44px; }
+    ul.plain { list-style:none; }
+    ul.plain li { padding:8px 0; border-bottom:1px solid var(--line); font-size:14px; }
+    #timerView, #printView { position:fixed; inset:0; background:var(--bg); z-index:40; display:none; flex-direction:column; padding:calc(24px + var(--st)) 24px calc(24px + var(--sb)); max-width:720px; margin:0 auto; overflow:auto; }
+    #timerView.on, #printView.on { display:flex; }
+    .t-kind { text-transform:uppercase; letter-spacing:.16em; font-size:12px; color:var(--gold); }
+    .t-name { font-size:32px; margin:8px 0 4px; }
+    .dots { display:flex; gap:6px; margin:16px 0 28px; }
+    .dots i { width:8px; height:8px; border-radius:50%; background:var(--bg3); display:block; }
+    .dots i.done { background:var(--accent); }
+    .dots i.now { background:var(--gold); }
+    .clock { font-family:"IBM Plex Mono",monospace; font-size:72px; font-weight:600; text-align:center; letter-spacing:-.04em; }
+    .bar { height:6px; background:var(--bg3); border-radius:99px; overflow:hidden; margin:20px 0 28px; }
+    .bar > span { display:block; height:100%; width:0; background:var(--accent); }
+    .bar.fun > span { background:var(--fun); }
+    .bar.pause > span { background:var(--gold); }
+    .row { display:flex; gap:8px; }
+    .row > * { flex:1; }
+    @media print {
+      nav, header, .no-print, .view { display:none !important; }
+      #printView { display:flex !important; position:static; background:#fff; color:#111; padding:0; max-width:none; }
+      #printSheet { border:0; }
+    }
+  </style>
+</head>
+<body>
+  <header class="app no-print">
+    <div><div class="brand">BLO<span>K</span></div><div class="hint" style="font-size:12px">drawingstudys</div></div>
+    <div class="sub" id="headerSub"></div>
+  </header>
+
+  <section class="view on" id="v-vandaag">
+    <p class="hint">Dagelijks ritme: opwarmen, Drawabox, pauze, Loomis, daarna iets leuks.</p>
+    <div class="card">
+      <h3>Aandachtspunt vandaag</h3>
+      <p class="gold" id="focusTitle"></p>
+      <p class="hint" id="focusUitleg"></p>
+      <button class="ghost wide" id="btnRotateFocus">Ander aandachtspunt</button>
+    </div>
+    <div class="card">
+      <h3>Sessie</h3>
+      <ol class="hint" id="sessionPreview"></ol>
+      <button class="wide" id="btnStart">Start sessie</button>
+    </div>
+    <div class="card">
+      <h3>Opwarming</h3>
+      <p class="hint">Doe twee of drie oefeningen. Maak ze af. Begin niet aan de hele lijst.</p>
+      <div id="warmupToday"></div>
+    </div>
+    <div class="card">
+      <h3>Huiswerk Drawabox</h3>
+      <div id="dabBlock"></div>
+    </div>
+    <div class="card">
+      <h3>Huiswerk Loomis</h3>
+      <div id="loomisBlock"></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-tracks"><div id="trackList"></div></section>
+  <section class="view" id="v-pool"><ul class="plain" id="poolList"></ul></section>
+  <section class="view" id="v-bladen"><div id="bladenList"></div></section>
+  <section class="view" id="v-stand">
+    <div class="statgrid">
+      <div class="stat"><b id="stStreak">0</b><span>dagen op rij</span></div>
+      <div class="stat"><b id="stSess">0</b><span>sessies</span></div>
+      <div class="stat"><b id="stMin">0</b><span>minuten</span></div>
+      <div class="stat"><b id="stTracks">0</b><span>tracks af</span></div>
+    </div>
+    <div class="card"><h3>Log</h3><ul class="plain" id="logList"></ul></div>
+    <button class="ghost wide" id="btnExport">Export JSON</button>
+    <button class="warn wide" id="btnReset">Reset alleen stats</button>
+  </section>
+  <section class="view" id="v-set">
+    <h3>Tijden (3–40 min)</h3>
+    <label class="field">Opwarmen</label><input type="number" min="3" max="40" id="tWarm" />
+    <label class="field">Drawabox</label><input type="number" min="3" max="40" id="tDab" />
+    <label class="field">Pauze</label><input type="number" min="3" max="40" id="tPause" />
+    <label class="field">Loomis</label><input type="number" min="3" max="40" id="tLoomis" />
+    <label class="field">Vrije tekening</label><input type="number" min="3" max="40" id="tFun" />
+    <label class="field">Eigen aandachtspunt</label><input type="text" id="customFocus" />
+    <div class="toggle"><span>Geluid</span><input type="checkbox" id="optSound" /></div>
+    <div class="toggle"><span>Trillen</span><input type="checkbox" id="optVib" /></div>
+    <button class="wide" id="btnSaveSet">Bewaar</button>
+  </section>
+
+  <nav class="bottom no-print">
+    <button data-v="vandaag" class="on">Vandaag</button>
+    <button data-v="tracks">Tracks</button>
+    <button data-v="bladen">Bladen</button>
+    <button data-v="pool">Pool</button>
+    <button data-v="stand">Stand</button>
+    <button data-v="set">Set</button>
+  </nav>
+
+  <div id="timerView">
+    <div class="t-kind" id="tKind"></div>
+    <h2 class="t-name" id="tName"></h2>
+    <p class="hint" id="tHint"></p>
+    <div class="dots" id="tDots"></div>
+    <div class="clock" id="tClock">00:00</div>
+    <div class="bar" id="tBar"><span></span></div>
+    <div class="row"><button class="ghost" id="btnPause">Pauze</button><button class="ghost" id="btnSkip">Overslaan</button></div>
+    <button class="warn wide" id="btnStop">Stop</button>
+  </div>
+
+  <div id="printView">
+    <div class="no-print row" style="margin-bottom:12px">
+      <button class="ghost" id="btnPrintBack">Terug</button>
+      <button id="btnDoPrint">Print dit blad</button>
+    </div>
+    <h1 id="printTitle" class="no-print"></h1>
+    <p class="hint no-print" id="printHint"></p>
+    <div id="printSheet" style="background:#fff;border-radius:8px;overflow:hidden"></div>
+  </div>
+
+  <script src="./data.js"></script>
+  <script src="./sheets.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
