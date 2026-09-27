@@ -61,20 +61,19 @@
 
   function renderToday() {
     const f = focus(), tr = track(), w = ensureWarmup();
-    $("headerSub").textContent = tr.naam;
+    $("headerSub").textContent = "";
+    $("dayTitle").textContent = tr.naam;
+    $("dayLine").textContent = tr.kort;
+    $("warmHead").textContent = "Lijnen · " + state.times.warm + " min";
+    $("dabHead").textContent = "Dozen · " + state.times.dab + " min";
+    $("loomHead").textContent = "Kop · " + state.times.loomis + " min";
+    $("afterLine").textContent = state.times.pause + " min niks, daarna " + state.times.fun + " min wat je zelf wilt.";
     $("focusTitle").textContent = f.titel;
     $("focusUitleg").textContent = f.uitleg;
-    $("sessionPreview").innerHTML = [
-      "Opwarmen " + state.times.warm + " min",
-      "Drawabox " + state.times.dab + " min",
-      "Pauze " + state.times.pause + " min",
-      "Loomis " + state.times.loomis + " min",
-      "Vrij " + state.times.fun + " min"
-    ].map((s, i) => "<li>" + (i + 1) + ". " + s + "</li>").join("");
     $("warmupToday").innerHTML = w.items.map((id) => {
       const item = warmupById(id);
       if (!item) return "";
-      return '<div class="subcard"><div class="rowline"><b>' + item.naam + '</b><button class="link" data-print="' + item.templateId + '">printblad</button></div><p class="hint">' + item.hoe + "</p></div>";
+      return '<div class="subcard"><div class="rowline"><b>' + item.naam + '</b><button class="link" data-print="' + item.templateId + '">blad</button></div><p class="hint">' + item.hoe + "</p></div>";
     }).join("");
     $("dabBlock").innerHTML = hw(tr.dab);
     $("loomisBlock").innerHTML = hw(tr.loomis);
