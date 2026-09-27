@@ -1,4 +1,4 @@
-const CACHE = "blok-v10";
+const CACHE = "blok-v11";
 const ASSETS = [
   "./",
   "./index.html",

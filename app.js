@@ -64,7 +64,6 @@
     $("headerSub").textContent = "";
     $("dayTitle").textContent = first.naam;
     $("dayLine").textContent = first.hoe;
-    $("daySheet").innerHTML = window.SHEETS.render(first.templateId);
     $("btnFirstSheet").setAttribute("data-print", first.templateId);
     $("warmHead").textContent = "Ook in de " + state.times.warm + " min";
     $("dabHead").textContent = "Dozen · " + state.times.dab + " min";
@@ -307,31 +306,33 @@
   async function requestWake() { try { if ("wakeLock" in navigator) wakeLock = await navigator.wakeLock.request("screen"); } catch (e) {} }
   function releaseWake() { if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; } }
   function paintSession() {
+    const on = ticking || sessionSec > 0;
     $("tSession").textContent = fmt(sessionSec);
     $("btnPause").textContent = ticking ? "Pauze" : "Verder";
-    $("btnStart").textContent = (ticking || sessionSec > 0) ? "Sessie loopt" : "Start tekentrainingssessie";
-    $("sessionBar").classList.toggle("on", ticking || sessionSec > 0);
-    document.body.classList.toggle("session-on", ticking || sessionSec > 0);
+    $("sessionBar").classList.toggle("on", on);
+    document.body.classList.toggle("session-on", on);
   }
-  function tickSession() {
-    if (!ticking) return;
-    sessionSec += 1;
-    paintSession();
-  }
-  function startSession() {
+  $("btnStart").onclick = () => {
     if (ticking) return;
     ticking = true;
     paintSession();
     clearInterval(interval);
-    interval = setInterval(tickSession, 1000);
+    interval = setInterval(() => { if (!ticking) return; sessionSec += 1; paintSession(); }, 1000);
     requestWake();
-  }
-  function stopSession(log) {
+  };
+  $("btnPause").onclick = () => {
+    ticking = !ticking;
+    if (ticking) { clearInterval(interval); interval = setInterval(() => { if (!ticking) return; sessionSec += 1; paintSession(); }, 1000); requestWake(); }
+    else releaseWake();
+    paintSession();
+  };
+  $("btnStop").onclick = () => {
+    if (!confirm("Sessie stoppen?")) return;
     const ran = sessionSec;
     ticking = false;
     clearInterval(interval);
     releaseWake();
-    if (log && ran > 0) {
+    if (ran > 0) {
       const day = todayISO();
       state.sessions.push({ dag: day, track: state.activeTrack, minuten: Math.max(1, Math.round(ran / 60)) });
       if (state.lastDay !== day) state.streak = state.lastDay === yesterdayISO() ? (state.streak || 0) + 1 : 1;
@@ -342,17 +343,6 @@
     }
     sessionSec = 0;
     paintSession();
-  }
-  $("btnStart").onclick = () => startSession();
-  $("btnPause").onclick = () => {
-    ticking = !ticking;
-    if (ticking) { clearInterval(interval); interval = setInterval(tickSession, 1000); requestWake(); }
-    else releaseWake();
-    paintSession();
-  };
-  $("btnStop").onclick = () => {
-    if (!confirm("Sessie stoppen?")) return;
-    stopSession(true);
   };
 
   if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(() => {});

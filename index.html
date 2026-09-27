@@ -70,11 +70,12 @@
     .swatch { width:100%; height:36px; border-radius:8px; margin-top:8px; background:#0d0d10; }
     .row { display:flex; gap:8px; }
     .row > * { flex:1; }
-    #sessionBar { display:none; position:fixed; left:50%; transform:translateX(-50%); bottom:calc(62px + var(--sb)); width:100%; max-width:480px; z-index:60; background:#1a1a1f; border-top:1px solid var(--line); padding:8px 12px; align-items:center; gap:8px; }
-    #sessionBar.on { display:flex; }
+    #sessionBar { position:fixed; left:50%; transform:translateX(-50%); bottom:calc(62px + var(--sb)); width:100%; max-width:480px; z-index:60; background:#1a1a1f; border-top:1px solid var(--line); padding:8px 12px; display:flex; align-items:center; gap:8px; }
     #sessionBar b { font-family:"IBM Plex Mono",monospace; font-size:28px; font-weight:600; min-width:92px; }
+    #sessionBar .clockonly { display:none; align-items:center; gap:8px; flex:1; }
+    #sessionBar.on .clockonly { display:flex; }
+    #sessionBar.on #btnStart { display:none; }
     body.session-on { padding-bottom:calc(132px + var(--sb)); }
-    #daySheet { background:#fff; border-radius:12px; overflow:hidden; margin:12px 0; }
     @media print {
       nav, header, .no-print, .view { display:none !important; }
       #printView { display:flex !important; position:static; background:#fff; color:#111; padding:0; max-width:none; }
@@ -91,11 +92,9 @@
   <section class="view on" id="v-vandaag">
     <h2 id="dayTitle" style="font-size:40px;line-height:1.05;margin:8px 0 8px"></h2>
     <p id="dayLine"></p>
-    <div id="daySheet"></div>
-    <button class="ghost wide" id="btnFirstSheet">Print</button>
     <p class="gold" id="focusTitle" style="margin-top:10px"></p>
     <p class="hint" id="focusUitleg"></p>
-    <button class="wide" id="btnStart">Start tekentrainingssessie</button>
+    <button class="ghost wide" id="btnFirstSheet">Blad</button>
     <details style="margin-top:18px">
       <summary class="hint" style="cursor:pointer;min-height:44px">Daarna</summary>
       <div class="card">
@@ -154,9 +153,12 @@
   </nav>
 
   <div id="sessionBar" class="no-print">
-    <div><div class="t-kind">Sessie</div><b id="tSession">00:00</b></div>
-    <button class="ghost" id="btnPause" style="flex:1">Pauze</button>
-    <button class="warn" id="btnStop" style="flex:1">Stop</button>
+    <button class="wide" id="btnStart" style="margin:0">Start tekentrainingssessie</button>
+    <div class="clockonly">
+      <b id="tSession">00:00</b>
+      <button class="ghost" id="btnPause" style="flex:1">Pauze</button>
+      <button class="warn" id="btnStop" style="flex:1">Stop</button>
+    </div>
   </div>
 
   <div id="printView">
