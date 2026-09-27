@@ -83,25 +83,29 @@
   </header>
 
   <section class="view on" id="v-vandaag">
-    <h2 id="dayTitle" style="font-size:34px;line-height:1.1;margin:6px 0 6px"></h2>
-    <p class="hint" id="dayLine"></p>
-    <div class="card">
-      <h3 id="warmHead"></h3>
-      <p class="gold" id="focusTitle"></p>
-      <p class="hint" id="focusUitleg"></p>
-      <div id="warmupToday"></div>
-      <button class="ghost wide" id="btnRotateFocus">Andere lijn</button>
-    </div>
-    <div class="card">
-      <h3 id="dabHead"></h3>
-      <div id="dabBlock"></div>
-    </div>
-    <div class="card">
-      <h3 id="loomHead"></h3>
-      <div id="loomisBlock"></div>
-    </div>
-    <p class="hint" id="afterLine"></p>
+    <h2 id="dayTitle" style="font-size:40px;line-height:1.05;margin:8px 0 8px"></h2>
+    <p id="dayLine"></p>
+    <p class="gold" id="focusTitle" style="margin-top:10px"></p>
+    <p class="hint" id="focusUitleg"></p>
     <button class="wide" id="btnStart">Teken dit</button>
+    <button class="ghost wide" id="btnFirstSheet">Blad</button>
+    <details style="margin-top:18px">
+      <summary class="hint" style="cursor:pointer;min-height:44px">Daarna</summary>
+      <div class="card">
+        <h3 id="warmHead"></h3>
+        <div id="warmupToday"></div>
+        <button class="ghost wide" id="btnRotateFocus">Andere lijn</button>
+      </div>
+      <div class="card">
+        <h3 id="dabHead"></h3>
+        <div id="dabBlock"></div>
+      </div>
+      <div class="card">
+        <h3 id="loomHead"></h3>
+        <div id="loomisBlock"></div>
+      </div>
+      <p class="hint" id="afterLine"></p>
+    </details>
   </section>
 
   <section class="view" id="v-tracks"><div id="trackList"></div></section>

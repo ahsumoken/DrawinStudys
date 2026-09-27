@@ -36,14 +36,13 @@
   function warmupById(id) { return D.WARMUPS.find((w) => w.id === id); }
   function ensureWarmup() {
     const t = todayISO();
-    if (state.dayWarmup && state.dayWarmupDate === t) return state.dayWarmup;
     const pool = state.pool.length ? state.pool : D.TRACKS[0].warmupIds;
-    const copy = pool.slice();
-    for (let i = copy.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [copy[i], copy[j]] = [copy[j], copy[i]]; }
-    const n = Math.min(copy.length, copy.length >= 3 ? 3 : Math.max(2, copy.length));
-    state.dayWarmup = { items: copy.slice(0, n) };
-    state.dayWarmupDate = t;
-    save();
+    const items = pool.slice(0, Math.min(pool.length, 3));
+    if (!state.dayWarmup || state.dayWarmupDate !== t || !state.dayWarmup.items || state.dayWarmup.items[0] !== items[0]) {
+      state.dayWarmup = { items: items };
+      state.dayWarmupDate = t;
+      save();
+    }
     return state.dayWarmup;
   }
 
@@ -61,16 +60,18 @@
 
   function renderToday() {
     const f = focus(), tr = track(), w = ensureWarmup();
+    const first = warmupById(w.items[0]) || { naam: tr.naam, hoe: tr.kort, templateId: tr.dab.templateId };
     $("headerSub").textContent = "";
-    $("dayTitle").textContent = tr.naam;
-    $("dayLine").textContent = tr.kort;
-    $("warmHead").textContent = "Lijnen · " + state.times.warm + " min";
+    $("dayTitle").textContent = first.naam;
+    $("dayLine").textContent = first.hoe;
+    $("btnFirstSheet").setAttribute("data-print", first.templateId);
+    $("warmHead").textContent = "Ook in de " + state.times.warm + " min";
     $("dabHead").textContent = "Dozen · " + state.times.dab + " min";
     $("loomHead").textContent = "Kop · " + state.times.loomis + " min";
     $("afterLine").textContent = state.times.pause + " min niks, daarna " + state.times.fun + " min wat je zelf wilt.";
     $("focusTitle").textContent = f.titel;
     $("focusUitleg").textContent = f.uitleg;
-    $("warmupToday").innerHTML = w.items.map((id) => {
+    $("warmupToday").innerHTML = w.items.slice(1).map((id) => {
       const item = warmupById(id);
       if (!item) return "";
       return '<div class="subcard"><div class="rowline"><b>' + item.naam + '</b><button class="link" data-print="' + item.templateId + '">blad</button></div><p class="hint">' + item.hoe + "</p></div>";
