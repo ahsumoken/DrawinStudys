@@ -208,11 +208,35 @@
     }
     return frame("Plooigroepen", "Twee ophangpunten. Grote dalen eerst.", inner);
   }
+  function hatch() {
+    function lines(x, y, w, h, gap, angle) {
+      let s = "", rad = angle * Math.PI / 180, dx = Math.cos(rad), dy = Math.sin(rad);
+      const span = w + h;
+      for (let i = -span; i < span; i += gap) {
+        const x0 = x + w / 2 + (-dy) * i, y0 = y + h / 2 + dx * i;
+        s += `<line x1="${x0 - dx * span}" y1="${y0 - dy * span}" x2="${x0 + dx * span}" y2="${y0 + dy * span}" stroke="${ink}" stroke-width="0.25"/>`;
+      }
+      return `<clipPath id="c${x}${y}"><rect x="${x}" y="${y}" width="${w}" height="${h}"/></clipPath><g clip-path="url(#c${x}${y})">${s}</g>`;
+    }
+    const boxes = [
+      [16, 42, 40, 36, 4, 0],
+      [62, 42, 40, 36, 2.4, 0],
+      [108, 42, 40, 36, 3.2, 35],
+      [154, 42, 40, 36, 2.2, 35]
+    ];
+    let inner = boxes.map((b) => `<rect x="${b[0]}" y="${b[1]}" width="${b[2]}" height="${b[3]}" fill="none" stroke="${mid}" stroke-width="0.3"/>` + lines(b[0], b[1], b[2], b[3], b[4], b[5])).join("");
+    inner += lines(108, 42, 40, 36, 3.2, -40) + lines(154, 42, 40, 36, 2.2, -50) + lines(154, 42, 40, 36, 2.2, 90);
+    inner += `<text x="16" y="90" font-size="3.4" fill="${mid}" font-family="sans-serif">licht</text><text x="154" y="90" font-size="3.4" fill="${mid}" font-family="sans-serif">donker</text>`;
+    inner += `<circle cx="55" cy="160" r="36" fill="none" stroke="${ink}" stroke-width="0.4"/>
+      <ellipse cx="140" cy="175" rx="28" ry="48" fill="none" stroke="${ink}" stroke-width="0.4"/>
+      <rect x="20" y="220" width="50" height="40" fill="none" stroke="${ink}" stroke-width="0.4"/>`;
+    return frame("Arceren met pen", "Links voorbeeld. Rechts zelf: bol, cilinder, doos. Lijnen, geen vegen.", inner);
+  }
   const MAP = {
     superimposed, ghosted, planes: () => planes(false), "table-ellipses": tableEllipses,
     "ellipses-planes": () => planes(true), funnels, "boxes-y": boxesY, "boxes-grid": boxesGrid,
     "cyl-boxes": cylBoxes, intersections, arrows, sausages, "loomis-ball": loomisBall,
-    "loomis-grid": loomisGrid, asaro, manikin, landmarks, plants, insects, texture, values, folds
+    "loomis-grid": loomisGrid, asaro, manikin, landmarks, plants, insects, texture, values, folds, hatch
   };
   g.SHEETS = { render(id) { return (MAP[id] || superimposed)(); } };
 })(window);

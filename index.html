@@ -38,8 +38,8 @@
     .rowline { display:flex; justify-content:space-between; gap:8px; align-items:flex-start; }
     .subcard { background:var(--bg3); border-radius:12px; padding:12px; margin-top:8px; }
     ol { padding-left:18px; margin:8px 0; }
-    nav.bottom { position:fixed; left:50%; transform:translateX(-50%); bottom:0; width:100%; max-width:480px; display:grid; grid-template-columns:repeat(6,1fr); background:#0d0d10; border-top:1px solid var(--line); padding:8px 4px calc(8px + var(--sb)); z-index:20; }
-    nav.bottom button { background:transparent; color:var(--muted); font-size:10px; font-weight:500; padding:8px 2px; min-height:44px; }
+    nav.bottom { position:fixed; left:50%; transform:translateX(-50%); bottom:0; width:100%; max-width:480px; display:grid; grid-template-columns:repeat(7,1fr); background:#0d0d10; border-top:1px solid var(--line); padding:8px 2px calc(8px + var(--sb)); z-index:20; }
+    nav.bottom button { background:transparent; color:var(--muted); font-size:9px; font-weight:500; padding:8px 1px; min-height:44px; }
     nav.bottom button.on { color:var(--gold); }
     .statgrid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
     .stat { background:var(--bg2); border-radius:14px; padding:14px; border:1px solid var(--line); }
@@ -63,7 +63,11 @@
     .bar > span { display:block; height:100%; width:0; background:var(--accent); }
     .bar.fun > span { background:var(--fun); }
     .bar.pause > span { background:var(--gold); }
-    .row { display:flex; gap:8px; }
+    .inkday { display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:var(--bg2); color:var(--fg); border:1px solid var(--line); margin:6px 0; min-height:48px; }
+    .inkday.on { outline:1px solid var(--gold); }
+    .inkday.done { opacity:.55; }
+    .inkday b { font-family:"IBM Plex Mono",monospace; color:var(--gold); min-width:22px; }
+    .swatch { width:100%; height:36px; border-radius:8px; margin-top:8px; background:#0d0d10; }
     .row > * { flex:1; }
     @media print {
       nav, header, .no-print, .view { display:none !important; }
@@ -108,6 +112,7 @@
 
   <section class="view" id="v-tracks"><div id="trackList"></div></section>
   <section class="view" id="v-pool"><ul class="plain" id="poolList"></ul></section>
+  <section class="view" id="v-inkt"><div id="inktRoot"></div></section>
   <section class="view" id="v-bladen"><div id="bladenList"></div></section>
   <section class="view" id="v-stand">
     <div class="statgrid">
@@ -136,6 +141,7 @@
   <nav class="bottom no-print">
     <button data-v="vandaag" class="on">Vandaag</button>
     <button data-v="tracks">Tracks</button>
+    <button data-v="inkt">Inkt</button>
     <button data-v="bladen">Bladen</button>
     <button data-v="pool">Pool</button>
     <button data-v="stand">Stand</button>
