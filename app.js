@@ -64,6 +64,7 @@
     $("headerSub").textContent = "";
     $("dayTitle").textContent = first.naam;
     $("dayLine").textContent = first.hoe;
+    $("daySheet").innerHTML = window.SHEETS.render(first.templateId);
     $("btnFirstSheet").setAttribute("data-print", first.templateId);
     $("warmHead").textContent = "Ook in de " + state.times.warm + " min";
     $("dabHead").textContent = "Dozen · " + state.times.dab + " min";
@@ -290,7 +291,7 @@
   $("btnPrintBack").onclick = () => $("printView").classList.remove("on");
   $("btnDoPrint").onclick = () => window.print();
 
-  let steps = [], stepIndex = 0, remain = 0, total = 0, ticking = false, interval = null, wakeLock = null, sessionSec = 0;
+  let sessionSec = 0, ticking = false, interval = null, wakeLock = null;
   function beep() {
     if (!state.sound) return;
     try {
@@ -305,51 +306,54 @@
   function fmt(sec) { return String(Math.floor(sec / 60)).padStart(2, "0") + ":" + String(sec % 60).padStart(2, "0"); }
   async function requestWake() { try { if ("wakeLock" in navigator) wakeLock = await navigator.wakeLock.request("screen"); } catch (e) {} }
   function releaseWake() { if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; } }
-  function buildSteps() {
-    const tr = track(), w = ensureWarmup(), f = focus();
-    const names = w.items.map((id) => (warmupById(id) || { naam: id }).naam).join(" · ");
-    return [
-      { kind: "warm", label: "Opwarmen", name: names, hint: "Let alleen op: " + f.titel + ". " + f.uitleg + " Doe twee of drie oefeningen. Maak ze af.", min: state.times.warm },
-      { kind: "dab", label: "Drawabox", name: tr.dab.titel, hint: tr.dab.taak, min: state.times.dab },
-      { kind: "pause", label: "Pauze", name: "Weg van het papier", hint: "Kijk ver weg. Schouders los.", min: state.times.pause },
-      { kind: "loomis", label: "Loomis", name: tr.loomis.titel, hint: tr.loomis.taak, min: state.times.loomis },
-      { kind: "fun", label: "Vrije tekening", name: "Teken wat je wilt", hint: "Geen extra drill.", min: state.times.fun }
-    ];
-  }
-  function paint() {
-    const s = steps[stepIndex]; if (!s) return;
-    $("tKind").textContent = s.label; $("tName").textContent = s.name; $("tHint").textContent = s.hint;
-    $("tClock").textContent = fmt(remain);
+  function paintSession() {
     $("tSession").textContent = fmt(sessionSec);
-    $("tBar").className = "bar" + (s.kind === "fun" ? " fun" : s.kind === "pause" ? " pause" : "");
-    $("tBar").querySelector("span").style.width = (total ? ((total - remain) / total) * 100 : 0) + "%";
-    $("tDots").innerHTML = steps.map((_, i) => "<i class='" + (i < stepIndex ? "done" : i === stepIndex ? "now" : "") + "'></i>").join("");
-    $("btnPause").textContent = ticking ? "Pauze" : "Hervat";
+    $("btnPause").textContent = ticking ? "Pauze" : "Verder";
+    $("btnStart").textContent = (ticking || sessionSec > 0) ? "Sessie loopt" : "Start tekentrainingssessie";
+    $("sessionBar").classList.toggle("on", ticking || sessionSec > 0);
+    document.body.classList.toggle("session-on", ticking || sessionSec > 0);
   }
-  function begin() { const s = steps[stepIndex]; remain = s.min * 60; total = remain; ticking = true; paint(); clearInterval(interval); interval = setInterval(tick, 1000); }
-  function tick() {
+  function tickSession() {
     if (!ticking) return;
     sessionSec += 1;
-    remain -= 1;
-    if (remain <= 0) { remain = 0; paint(); beep(); vibrate(); next(); return; }
-    paint();
+    paintSession();
   }
-  function next() {
+  function startSession() {
+    if (ticking) return;
+    ticking = true;
+    paintSession();
     clearInterval(interval);
-    if (stepIndex >= steps.length - 1) { finish(); return; }
-    stepIndex += 1; begin();
+    interval = setInterval(tickSession, 1000);
+    requestWake();
   }
-  function finish() {
-    ticking = false; clearInterval(interval); releaseWake(); $("timerView").classList.remove("on");
-    const mins = steps.reduce((a, s) => a + s.min, 0), day = todayISO();
-    state.sessions.push({ dag: day, track: state.activeTrack, minuten: mins });
-    if (state.lastDay !== day) state.streak = state.lastDay === yesterdayISO() ? (state.streak || 0) + 1 : 1;
-    state.lastDay = day; save(); beep(); vibrate();
+  function stopSession(log) {
+    const ran = sessionSec;
+    ticking = false;
+    clearInterval(interval);
+    releaseWake();
+    if (log && ran > 0) {
+      const day = todayISO();
+      state.sessions.push({ dag: day, track: state.activeTrack, minuten: Math.max(1, Math.round(ran / 60)) });
+      if (state.lastDay !== day) state.streak = state.lastDay === yesterdayISO() ? (state.streak || 0) + 1 : 1;
+      state.lastDay = day;
+      save();
+      beep();
+      vibrate();
+    }
+    sessionSec = 0;
+    paintSession();
   }
-  $("btnStart").onclick = () => { steps = buildSteps(); stepIndex = 0; sessionSec = 0; begin(); $("timerView").classList.add("on"); requestWake(); };
-  $("btnPause").onclick = () => { ticking = !ticking; if (ticking) { clearInterval(interval); interval = setInterval(tick, 1000); requestWake(); } else releaseWake(); paint(); };
-  $("btnSkip").onclick = () => next();
-  $("btnStop").onclick = () => { if (!confirm("Stoppen zonder loggen?")) return; ticking = false; clearInterval(interval); releaseWake(); $("timerView").classList.remove("on"); };
+  $("btnStart").onclick = () => startSession();
+  $("btnPause").onclick = () => {
+    ticking = !ticking;
+    if (ticking) { clearInterval(interval); interval = setInterval(tickSession, 1000); requestWake(); }
+    else releaseWake();
+    paintSession();
+  };
+  $("btnStop").onclick = () => {
+    if (!confirm("Sessie stoppen?")) return;
+    stopSession(true);
+  };
 
   if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(() => {});
   show("vandaag");
