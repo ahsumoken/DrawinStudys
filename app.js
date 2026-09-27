@@ -290,7 +290,7 @@
   $("btnPrintBack").onclick = () => $("printView").classList.remove("on");
   $("btnDoPrint").onclick = () => window.print();
 
-  let steps = [], stepIndex = 0, remain = 0, total = 0, ticking = false, interval = null, wakeLock = null;
+  let steps = [], stepIndex = 0, remain = 0, total = 0, ticking = false, interval = null, wakeLock = null, sessionSec = 0;
   function beep() {
     if (!state.sound) return;
     try {
@@ -320,6 +320,7 @@
     const s = steps[stepIndex]; if (!s) return;
     $("tKind").textContent = s.label; $("tName").textContent = s.name; $("tHint").textContent = s.hint;
     $("tClock").textContent = fmt(remain);
+    $("tSession").textContent = fmt(sessionSec);
     $("tBar").className = "bar" + (s.kind === "fun" ? " fun" : s.kind === "pause" ? " pause" : "");
     $("tBar").querySelector("span").style.width = (total ? ((total - remain) / total) * 100 : 0) + "%";
     $("tDots").innerHTML = steps.map((_, i) => "<i class='" + (i < stepIndex ? "done" : i === stepIndex ? "now" : "") + "'></i>").join("");
@@ -328,6 +329,7 @@
   function begin() { const s = steps[stepIndex]; remain = s.min * 60; total = remain; ticking = true; paint(); clearInterval(interval); interval = setInterval(tick, 1000); }
   function tick() {
     if (!ticking) return;
+    sessionSec += 1;
     remain -= 1;
     if (remain <= 0) { remain = 0; paint(); beep(); vibrate(); next(); return; }
     paint();
@@ -344,7 +346,7 @@
     if (state.lastDay !== day) state.streak = state.lastDay === yesterdayISO() ? (state.streak || 0) + 1 : 1;
     state.lastDay = day; save(); beep(); vibrate();
   }
-  $("btnStart").onclick = () => { steps = buildSteps(); stepIndex = 0; begin(); $("timerView").classList.add("on"); requestWake(); };
+  $("btnStart").onclick = () => { steps = buildSteps(); stepIndex = 0; sessionSec = 0; begin(); $("timerView").classList.add("on"); requestWake(); };
   $("btnPause").onclick = () => { ticking = !ticking; if (ticking) { clearInterval(interval); interval = setInterval(tick, 1000); requestWake(); } else releaseWake(); paint(); };
   $("btnSkip").onclick = () => next();
   $("btnStop").onclick = () => { if (!confirm("Stoppen zonder loggen?")) return; ticking = false; clearInterval(interval); releaseWake(); $("timerView").classList.remove("on"); };
