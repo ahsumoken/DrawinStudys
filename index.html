@@ -36,7 +36,10 @@
     button.link { background:none; color:var(--gold); min-height:auto; padding:0; font-size:12px; text-decoration:underline; }
     .cardbtn { display:block; width:100%; text-align:left; background:var(--bg2); color:var(--fg); border:1px solid var(--line); margin:8px 0; }
     .cardbtn .hint { display:block; font-weight:400; margin-top:4px; }
-    .rowline { display:flex; justify-content:space-between; gap:8px; align-items:flex-start; }
+    .rowline { display:flex; justify-content:space-between; gap:8px; align-items:center; }
+    button.check { width:22px; height:22px; min-width:22px; padding:0; border-radius:50%; background:transparent; border:1px solid var(--muted); color:transparent; font-size:13px; line-height:22px; }
+    button.check.on { background:var(--accent); border-color:var(--accent); color:var(--fg); }
+    .collapsed .lesson-body { display:none; }
     .subcard { background:var(--bg3); border-radius:12px; padding:12px; margin-top:8px; }
     ol { padding-left:18px; margin:8px 0; }
     nav.bottom { position:fixed; left:50%; transform:translateX(-50%); bottom:0; width:100%; max-width:480px; display:grid; grid-template-columns:repeat(7,1fr); background:#0d0d10; border-top:1px solid var(--line); padding:8px 2px calc(8px + var(--sb)); z-index:20; }
@@ -91,12 +94,17 @@
   </header>
 
   <section class="view on" id="v-vandaag">
-    <h2 id="dayTitle" style="font-size:40px;line-height:1.05;margin:8px 0 8px"></h2>
-    <p id="dayLine"></p>
-    <p id="dayLesRow" class="hint" hidden><a id="dayLes" class="les" target="_blank" rel="noopener">les</a></p>
+    <div class="rowline">
+      <h2 id="dayTitle" style="font-size:40px;line-height:1.05;margin:8px 0"></h2>
+      <button type="button" class="check" id="dayCheck">✓</button>
+    </div>
+    <div id="dayBody">
+      <p id="dayLine"></p>
+      <p id="dayLesRow" class="hint" hidden><a id="dayLes" class="les" target="_blank" rel="noopener">les</a></p>
+      <button class="ghost wide" id="btnFirstSheet">Blad</button>
+    </div>
     <p class="gold" id="focusTitle" style="margin-top:10px"></p>
     <p class="hint" id="focusUitleg"></p>
-    <button class="ghost wide" id="btnFirstSheet">Blad</button>
     <details style="margin-top:18px">
       <summary class="hint" style="cursor:pointer;min-height:44px">Daarna</summary>
       <div class="card">
@@ -129,7 +137,7 @@
     </div>
     <div class="card"><h3>Log</h3><ul class="plain" id="logList"></ul></div>
     <button class="ghost wide" id="btnExport">Export JSON</button>
-    <button class="warn wide" id="btnReset">Reset alleen stats</button>
+    <button class="warn wide" id="btnReset">Reset stats en lessen</button>
   </section>
   <section class="view" id="v-set">
     <h3>Tijden (3–40 min)</h3>
@@ -142,6 +150,11 @@
     <div class="toggle"><span>Geluid</span><input type="checkbox" id="optSound" /></div>
     <div class="toggle"><span>Trillen</span><input type="checkbox" id="optVib" /></div>
     <button class="wide" id="btnSaveSet">Bewaar</button>
+    <h3 style="margin-top:22px">GitHub</h3>
+    <p class="hint" id="ghStatus"></p>
+    <input type="password" id="ghToken" placeholder="token" autocomplete="off" />
+    <p class="hint"><a class="les" href="https://github.com/settings/tokens/new?scopes=gist&description=BLOK" target="_blank" rel="noopener">token</a></p>
+    <button type="button" class="ghost wide" id="btnGh">Koppel</button>
   </section>
 
   <nav class="bottom no-print">

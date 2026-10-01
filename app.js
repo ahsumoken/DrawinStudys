@@ -8,7 +8,7 @@
     activeTrack: 0, doneTracks: [], pool: D.TRACKS[0].warmupIds.slice(),
     focusIndex: 0, customFocus: "", sound: true, vib: true,
     sessions: [], lastDay: null, streak: 0, dayWarmup: null, dayWarmupDate: null,
-    inkDone: [], hatchDone: [], inkPace: "dag"
+    inkDone: [], hatchDone: [], inkPace: "dag", doneLessons: [], ghToken: "", gistId: ""
   };
 
   function load() {
@@ -64,6 +64,10 @@
     $("headerSub").textContent = "";
     $("dayTitle").textContent = first.naam;
     $("dayLine").textContent = first.hoe;
+    const dayKey = "w:" + (first.id || ("t" + tr.id));
+    $("dayCheck").setAttribute("data-check", dayKey);
+    $("dayCheck").classList.toggle("on", isDone(dayKey));
+    $("dayBody").hidden = isDone(dayKey);
     const dayLes = $("dayLes");
     const dayLesRow = $("dayLesRow");
     if (first.les) {
@@ -83,19 +87,22 @@
     $("warmupToday").innerHTML = w.items.slice(1).map((id) => {
       const item = warmupById(id);
       if (!item) return "";
-      return '<div class="subcard"><div class="rowline"><b>' + item.naam + '</b>' + lesA(item.les) + '<button class="link" data-print="' + item.templateId + '">blad</button></div><p class="hint">' + item.hoe + "</p></div>";
+      const on = isDone("w:" + item.id);
+      return '<div class="subcard' + (on ? " collapsed" : "") + '"><div class="rowline"><button type="button" class="check' + (on ? " on" : "") + '" data-check="w:' + item.id + '">✓</button><b>' + item.naam + '</b>' + lesA(item.les) + '<button class="link" data-print="' + item.templateId + '">blad</button></div><div class="lesson-body"><p class="hint">' + item.hoe + "</p></div></div>";
     }).join("");
-    $("dabBlock").innerHTML = hw(tr.dab);
-    $("loomisBlock").innerHTML = hw(tr.loomis);
+    $("dabBlock").innerHTML = hw(tr.dab, "dab:" + tr.id);
+    $("loomisBlock").innerHTML = hw(tr.loomis, "loom:" + tr.id);
   }
   function lesA(les) {
     if (!les) return "";
     const list = Array.isArray(les) ? les : [{ t: "les", u: les }];
     return list.map((x) => '<a class="les" href="' + x.u + '" target="_blank" rel="noopener">' + x.t + "</a>").join("");
   }
-  function hw(h) {
-    return "<p class='gold'>" + h.titel + lesA(h.les) + "</p><p>" + h.taak + "</p><p class='hint'>" + h.voorbeeld + "</p><ol class='hint'>" +
-      h.stappen.map((s) => "<li>" + s + "</li>").join("") + '</ol><button class="ghost wide" data-print="' + h.templateId + '">Print oefenblad</button>';
+  function isDone(id) { return (state.doneLessons || []).includes(id); }
+  function hw(h, key) {
+    const on = isDone(key);
+    return '<div class="' + (on ? "collapsed" : "") + '"><p class="gold rowline"><span>' + h.titel + lesA(h.les) + '</span><button type="button" class="check' + (on ? " on" : "") + '" data-check="' + key + '">✓</button></p><div class="lesson-body"><p>' + h.taak + "</p><p class='hint'>" + h.voorbeeld + "</p><ol class='hint'>" +
+      h.stappen.map((s) => "<li>" + s + "</li>").join("") + '</ol><button class="ghost wide" data-print="' + h.templateId + '">Print oefenblad</button></div></div>';
   }
 
   function renderTracks() {
@@ -218,6 +225,58 @@
     $("customFocus").value = state.customFocus || "";
     $("optSound").checked = !!state.sound;
     $("optVib").checked = !!state.vib;
+    $("ghStatus").textContent = state.ghToken ? "Gekoppeld." : "Niet gekoppeld.";
+  }
+
+  function ghHeaders() {
+    return { Authorization: "Bearer " + state.ghToken, Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" };
+  }
+  async function pullGist(create) {
+    if (!state.ghToken) return false;
+    const headers = ghHeaders();
+    try {
+      if (!state.gistId) {
+        const listRes = await fetch("https://api.github.com/gists?per_page=100", { headers });
+        if (!listRes.ok) return false;
+        const list = await listRes.json();
+        const found = Array.isArray(list) && list.find((g) => g.description === "BLOK afgevinkt");
+        if (found) state.gistId = found.id;
+        else if (create) {
+          const made = await fetch("https://api.github.com/gists", {
+            method: "POST",
+            headers: Object.assign({ "Content-Type": "application/json" }, headers),
+            body: JSON.stringify({
+              description: "BLOK afgevinkt",
+              public: false,
+              files: { "blok.json": { content: JSON.stringify({ doneLessons: state.doneLessons || [] }) } }
+            })
+          });
+          if (!made.ok) return false;
+          const madeJson = await made.json();
+          state.gistId = madeJson.id;
+          save();
+          return true;
+        } else return false;
+      }
+      const res = await fetch("https://api.github.com/gists/" + state.gistId, { headers });
+      if (!res.ok) return false;
+      const g = await res.json();
+      const file = g.files && g.files["blok.json"];
+      if (file && file.content) {
+        const data = JSON.parse(file.content);
+        if (Array.isArray(data.doneLessons)) state.doneLessons = data.doneLessons;
+      }
+      save();
+      return true;
+    } catch (e) { return false; }
+  }
+  function pushGist() {
+    if (!state.ghToken || !state.gistId) return;
+    fetch("https://api.github.com/gists/" + state.gistId, {
+      method: "PATCH",
+      headers: Object.assign({ "Content-Type": "application/json" }, ghHeaders()),
+      body: JSON.stringify({ files: { "blok.json": { content: JSON.stringify({ doneLessons: state.doneLessons || [] }) } } })
+    }).catch(() => {});
   }
 
   function openPrint(id) {
@@ -232,6 +291,17 @@
   document.body.addEventListener("click", (e) => {
     const nav = e.target.closest("nav.bottom button");
     if (nav) { show(nav.dataset.v); return; }
+    const chk = e.target.closest("[data-check]");
+    if (chk) {
+      const id = chk.getAttribute("data-check");
+      state.doneLessons = state.doneLessons || [];
+      const i = state.doneLessons.indexOf(id);
+      if (i >= 0) state.doneLessons.splice(i, 1); else state.doneLessons.push(id);
+      save();
+      renderToday();
+      pushGist();
+      return;
+    }
     const pr = e.target.closest("[data-print]");
     if (pr) { openPrint(pr.getAttribute("data-print")); return; }
     const hd = e.target.closest("[data-hatch]");
@@ -292,14 +362,29 @@
     state.vib = $("optVib").checked;
     save();
   };
+  $("btnGh").onclick = async () => {
+    const token = $("ghToken").value.trim();
+    if (!token) return;
+    state.ghToken = token;
+    state.gistId = "";
+    $("ghToken").value = "";
+    $("ghStatus").textContent = "…";
+    const ok = await pullGist(true);
+    if (!ok) { state.ghToken = ""; state.gistId = ""; }
+    save();
+    $("ghStatus").textContent = ok ? "Gekoppeld." : "Token werkt niet.";
+    renderToday();
+  };
   $("btnExport").onclick = () => {
+    const copy = Object.assign({}, state);
+    delete copy.ghToken;
     const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([JSON.stringify(state, null, 2)], { type: "application/json" }));
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(copy, null, 2)], { type: "application/json" }));
     a.download = "blok-export.json"; a.click();
   };
   $("btnReset").onclick = () => {
-    if (!confirm("Stats wissen? Tracks en pool blijven.")) return;
-    state.sessions = []; state.streak = 0; state.lastDay = null; save(); renderStand();
+    if (!confirm("Stats en afgevinkte lessen wissen? Tracks en pool blijven.")) return;
+    state.sessions = []; state.streak = 0; state.lastDay = null; state.doneLessons = []; save(); pushGist(); renderStand(); renderToday();
   };
   $("btnPrintBack").onclick = () => $("printView").classList.remove("on");
   $("btnDoPrint").onclick = () => window.print();
@@ -360,5 +445,6 @@
   };
 
   if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(() => {});
+  pullGist(false).then(() => { renderToday(); });
   show("vandaag");
 })();
