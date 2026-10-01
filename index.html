@@ -27,6 +27,7 @@
     .card.active { outline:1px solid var(--accent); }
     .dim { opacity:.4; }
     .hint { color:var(--muted); font-size:14px; line-height:1.45; }
+    a.les { color:var(--muted); font-size:12px; text-decoration:none; border-bottom:1px solid var(--line); margin-left:8px; }
     .gold { color:var(--gold); }
     button { font-family:inherit; border:0; border-radius:12px; padding:12px 16px; font-size:15px; font-weight:600; cursor:pointer; color:#1a0e08; background:var(--accent); min-height:44px; }
     button.ghost { background:var(--bg3); color:var(--fg); border:1px solid var(--line); }
@@ -92,6 +93,7 @@
   <section class="view on" id="v-vandaag">
     <h2 id="dayTitle" style="font-size:40px;line-height:1.05;margin:8px 0 8px"></h2>
     <p id="dayLine"></p>
+    <p id="dayLesRow" class="hint" hidden><a id="dayLes" class="les" target="_blank" rel="noopener">les</a></p>
     <p class="gold" id="focusTitle" style="margin-top:10px"></p>
     <p class="hint" id="focusUitleg"></p>
     <button class="ghost wide" id="btnFirstSheet">Blad</button>

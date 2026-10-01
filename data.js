@@ -85,79 +85,92 @@ var BLOK = (() => {
       id: "superimposed",
       naam: "Lijnen over elkaar",
       hoe: "Twee punten. Trek 8 keer dezelfde lijn eroverheen. Doel: de lijn blijft op de lijn, niet ernaast.",
-      templateId: "superimposed"
+      templateId: "superimposed",
+      les: "https://drawabox.com/lesson/1/superimposedlines"
     },
     {
       id: "ghosted",
       naam: "Ghosted lijnen",
       hoe: "Twee punten. Beweeg een paar keer in de lucht (ghosting). Zet dan \xE9\xE9n lijn. Niet bijwerken.",
-      templateId: "ghosted"
+      templateId: "ghosted",
+      les: "https://drawabox.com/lesson/1/ghostedlines"
     },
     {
       id: "planes",
       naam: "Vlakken met kruis",
       hoe: "Teken een rechthoek. Zet de diagonalen. Halveer. Oefening voor rechte lijnen in een vlak.",
-      templateId: "planes"
+      templateId: "planes",
+      les: "https://drawabox.com/lesson/1/ghostedplanes"
     },
     {
       id: "table-ellipses",
       naam: "Tabel met ellipsen",
       hoe: "Rijen vakjes. Vul elk vak met twee of drie ellipsen die de randen raken. Geen spitsen.",
-      templateId: "table-ellipses"
+      templateId: "table-ellipses",
+      les: "https://drawabox.com/lesson/1/tablesofellipses"
     },
     {
       id: "ellipses-planes",
       naam: "Ellips in het vlak",
       hoe: "In elk getekend vlak \xE9\xE9n ellips die alle vier de zijden raakt.",
-      templateId: "ellipses-planes"
+      templateId: "ellipses-planes",
+      les: "https://drawabox.com/lesson/1/ellipsesinplanes"
     },
     {
       id: "funnels",
       naam: "Trechters",
       hoe: "Twee gebogen zijden + rechte as. Stapel ellipsen haaks op de as. Dichter bij je: ronder. Verder: smaller.",
-      templateId: "funnels"
+      templateId: "funnels",
+      les: "https://drawabox.com/lesson/1/funnels"
     },
     {
       id: "arrows",
       naam: "Pijlen in de ruimte",
       hoe: "Een lint dat naar je toe en van je af draait. De randen blijven evenwijdig in de diepte.",
-      templateId: "arrows"
+      templateId: "arrows",
+      les: "https://drawabox.com/lesson/2/arrows"
     },
     {
       id: "sausages",
       naam: "Worstvormen",
       hoe: "Een cilinder met ronde kapjes. Draai ze in de ruimte. Geen contour-gokken: denk volume.",
-      templateId: "sausages"
+      templateId: "sausages",
+      les: "https://drawabox.com/lesson/2/organicforms"
     },
     {
       id: "texture",
       naam: "Korte textuur",
       hoe: "E\xE9n klein vlak. Van compact (dichtbij) naar open (verder). Geen willekeurige krassen.",
-      templateId: "texture"
+      templateId: "texture",
+      les: "https://drawabox.com/lesson/2/texture"
     },
     {
       id: "plants",
       naam: "Plant-opbouw",
       hoe: "Stengel als worst, bladeren als vlakken. Eerst grote masses, dan pas details.",
-      templateId: "plants"
+      templateId: "plants",
+      les: "https://drawabox.com/lesson/3"
     },
     {
       id: "insects",
       naam: "Insect-masses",
       hoe: "Drie volumes: kop, borst, achterlijf. Verbind ze. Geen pootjes tot de masses kloppen.",
-      templateId: "insects"
+      templateId: "insects",
+      les: "https://drawabox.com/lesson/4"
     },
     {
       id: "cyl-boxes",
       naam: "Cilinders in dozen",
       hoe: "Teken eerst de doos. Ellipsen op de kapjes. De as van de cilinder volgt de diepte van de doos.",
-      templateId: "cyl-boxes"
+      templateId: "cyl-boxes",
+      les: "https://drawabox.com/lesson/250cylinders"
     },
     {
       id: "intersections",
       naam: "Vormen die elkaar snijden",
       hoe: "Twee eenvoudige volumes (doos, bol, cilinder) door elkaar. Teken de snijlijn.",
-      templateId: "intersections"
+      templateId: "intersections",
+      les: "https://drawabox.com/lesson/2/formintersections"
     },
     {
       id: "head-rot",
@@ -213,7 +226,8 @@ var BLOK = (() => {
           "Controleer: evenwijdige ribben lopen naar hetzelfde punt.",
           "Stop na 5\u20136 stuks. Kwaliteit boven aantal."
         ],
-        templateId: "boxes-y"
+        templateId: "boxes-y",
+        les: "https://drawabox.com/lesson/250boxes"
       },
       loomis: {
         titel: "Bal + middenlijn + kaakvlak",
@@ -245,7 +259,8 @@ var BLOK = (() => {
           "Verbind tot een volume.",
           "Controleer: het volume draait, het is geen worst-sticker."
         ],
-        templateId: "sausages"
+        templateId: "sausages",
+        les: "https://drawabox.com/lesson/2"
       },
       loomis: {
         titel: "Koppen in 3/4, profiel, van onder",
@@ -276,7 +291,8 @@ var BLOK = (() => {
           "Verbind ze overtuigend.",
           "Details: max \xE9\xE9n blad of \xE9\xE9n pootgroep."
         ],
-        templateId: "plants"
+        templateId: "plants",
+        les: [{ t: "plant", u: "https://drawabox.com/lesson/3" }, { t: "insect", u: "https://drawabox.com/lesson/4" }]
       },
       loomis: {
         titel: "Manikin: ribbenkorf en bekken",
@@ -307,7 +323,8 @@ var BLOK = (() => {
           "Ellips voor en achter, haaks op de as.",
           "Verbind de zijden."
         ],
-        templateId: "cyl-boxes"
+        templateId: "cyl-boxes",
+        les: [{ t: "cilinders", u: "https://drawabox.com/lesson/250cylinders" }, { t: "snijden", u: "https://drawabox.com/lesson/2/formintersections" }]
       },
       loomis: {
         titel: "Kop als harde vormen",

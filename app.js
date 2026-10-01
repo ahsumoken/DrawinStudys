@@ -64,6 +64,15 @@
     $("headerSub").textContent = "";
     $("dayTitle").textContent = first.naam;
     $("dayLine").textContent = first.hoe;
+    const dayLes = $("dayLes");
+    const dayLesRow = $("dayLesRow");
+    if (first.les) {
+      dayLes.href = first.les;
+      dayLesRow.hidden = false;
+    } else {
+      dayLes.removeAttribute("href");
+      dayLesRow.hidden = true;
+    }
     $("btnFirstSheet").setAttribute("data-print", first.templateId);
     $("warmHead").textContent = "Ook in de " + state.times.warm + " min";
     $("dabHead").textContent = "Dozen · " + state.times.dab + " min";
@@ -74,13 +83,18 @@
     $("warmupToday").innerHTML = w.items.slice(1).map((id) => {
       const item = warmupById(id);
       if (!item) return "";
-      return '<div class="subcard"><div class="rowline"><b>' + item.naam + '</b><button class="link" data-print="' + item.templateId + '">blad</button></div><p class="hint">' + item.hoe + "</p></div>";
+      return '<div class="subcard"><div class="rowline"><b>' + item.naam + '</b>' + lesA(item.les) + '<button class="link" data-print="' + item.templateId + '">blad</button></div><p class="hint">' + item.hoe + "</p></div>";
     }).join("");
     $("dabBlock").innerHTML = hw(tr.dab);
     $("loomisBlock").innerHTML = hw(tr.loomis);
   }
+  function lesA(les) {
+    if (!les) return "";
+    const list = Array.isArray(les) ? les : [{ t: "les", u: les }];
+    return list.map((x) => '<a class="les" href="' + x.u + '" target="_blank" rel="noopener">' + x.t + "</a>").join("");
+  }
   function hw(h) {
-    return "<p class='gold'>" + h.titel + "</p><p>" + h.taak + "</p><p class='hint'>" + h.voorbeeld + "</p><ol class='hint'>" +
+    return "<p class='gold'>" + h.titel + lesA(h.les) + "</p><p>" + h.taak + "</p><p class='hint'>" + h.voorbeeld + "</p><ol class='hint'>" +
       h.stappen.map((s) => "<li>" + s + "</li>").join("") + '</ol><button class="ghost wide" data-print="' + h.templateId + '">Print oefenblad</button>';
   }
 
