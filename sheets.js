@@ -134,52 +134,21 @@
     });
     return frame("Kopdraaiingen", "Zes standen. Alleen constructie.", inner);
   }
-  function asaro() {
+  function empty(n) {
     let inner = "";
-    for (let i = 0; i < 4; i++) {
-      const x = 55 + (i % 2) * 90, y = 90 + Math.floor(i / 2) * 100;
-      inner += `<circle cx="${x}" cy="${y-8}" r="32" fill="none" stroke="${faint}" stroke-width="0.3"/><path d="M${x-20} ${y+14} L${x} ${y+40} L${x+20} ${y+14}" fill="none" stroke="${faint}" stroke-width="0.3"/>`;
+    const cols = 2;
+    for (let i = 0; i < n; i++) {
+      const x = 16 + (i % cols) * 92;
+      const y = 40 + Math.floor(i / cols) * 62;
+      inner += `<rect x="${x}" y="${y}" width="84" height="54" fill="none" stroke="${faint}" stroke-width="0.3"/>`;
     }
-    return frame("Gezichts-vlakken", "Hak grote platte vlakken. Geen features.", inner);
+    return inner;
   }
-  function manikin() {
-    const poses = ["contrapposto","reiken","zitten","lopen","bukken","draai"];
-    let inner = "";
-    poses.forEach((p, i) => {
-      const x = 28 + (i % 3) * 62, y0 = 48 + Math.floor(i / 3) * 120, y1 = y0 + 96;
-      inner += `<line x1="${x}" y1="${y0}" x2="${x+(i%2===0?8:-8)}" y2="${y1}" stroke="${mid}" stroke-width="0.3" stroke-dasharray="1.2 1.2"/><text x="${x}" y="${y1+8}" font-size="3.8" fill="${mid}" font-family="sans-serif">${p}</text>`;
-    });
-    return frame("Manikin-poses", "Ribbenkorf, bekken, ledematen. 2 min per pose.", inner);
-  }
-  function landmarks() {
-    return frame("Landmerken", "Alleen botpunten.",
-      `<text x="16" y="50" font-size="5" fill="${ink}" font-family="sans-serif">Schouder</text>
-       <ellipse cx="70" cy="90" rx="50" ry="32" fill="none" stroke="${faint}" stroke-width="0.3"/>
-       <text x="16" y="150" font-size="5" fill="${ink}" font-family="sans-serif">Bekken</text>
-       <ellipse cx="70" cy="200" rx="46" ry="36" fill="none" stroke="${faint}" stroke-width="0.3"/>
-       <text x="120" y="50" font-size="5" fill="${ink}" font-family="sans-serif">Knie</text>
-       <ellipse cx="160" cy="110" rx="28" ry="50" fill="none" stroke="${faint}" stroke-width="0.3"/>`);
-  }
-  function plants() {
-    let inner = "";
-    for (let i = 0; i < 3; i++) {
-      const x = 40 + i * 62;
-      inner += `<path d="M${x-18} 250 L${x-14} 220 L${x+14} 220 L${x+18} 250 Z" fill="none" stroke="${ink}" stroke-width="0.35"/>
-        <ellipse cx="${x}" cy="220" rx="14" ry="4" fill="none" stroke="${ink}" stroke-width="0.3"/>
-        <line x1="${x}" y1="220" x2="${x}" y2="90" stroke="${mid}" stroke-width="0.3" stroke-dasharray="1.2 1.2"/>`;
-    }
-    return frame("Plant-masses", "Pot klaar. Stengel als worst, bladeren als vlakken.", inner);
-  }
-  function insects() {
-    let inner = "";
-    for (let i = 0; i < 4; i++) {
-      const y = 60 + i * 55;
-      inner += `<ellipse cx="50" cy="${y}" rx="12" ry="10" fill="none" stroke="${faint}" stroke-width="0.3"/>
-        <ellipse cx="90" cy="${y}" rx="18" ry="12" fill="none" stroke="${faint}" stroke-width="0.3"/>
-        <ellipse cx="140" cy="${y}" rx="28" ry="14" fill="none" stroke="${faint}" stroke-width="0.3"/>`;
-    }
-    return frame("Insect-masses", "Kop, borst, achterlijf. Poten later.", inner);
-  }
+  function asaro() { return frame("Gezichts-vlakken", "Hak grote platte vlakken. Geen features.", empty(8)); }
+  function manikin() { return frame("Manikin-poses", "Ribbenkorf, bekken, ledematen. 2 min per pose.", empty(6)); }
+  function landmarks() { return frame("Landmerken", "Alleen botpunten.", empty(6)); }
+  function plants() { return frame("Plant-masses", "Pot, stengel, blad. Zelf tekenen.", empty(6)); }
+  function insects() { return frame("Insect-masses", "Kop, borst, achterlijf. Zelf tekenen.", empty(8)); }
   function texture() {
     let inner = "";
     for (let i = 0; i < 3; i++) {
