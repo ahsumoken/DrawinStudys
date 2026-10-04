@@ -25,6 +25,7 @@ var BLOK = (() => {
     TEMPLATES: () => TEMPLATES,
     TRACKS: () => TRACKS,
     WARMUPS: () => WARMUPS,
+    CATS: () => CATS,
     trackById: () => trackById,
     warmupById: () => warmupById
   });
@@ -620,6 +621,50 @@ var BLOK = (() => {
       blurb: "Twee ophangpunten. Teken de grote plooien ertussen.",
       printHint: "Eerst dalen, dan pas kleine rimpels."
     }
+  ];
+  var CATS = [
+    { id: 1, fase: "Vorm", titel: "Cirkels en ovalen", taak: "Teken 20 cirkels en 20 ovalen, licht. Nog geen kat. De vorm mag scheef zijn, als hij in één beweging staat." },
+    { id: 2, fase: "Vorm", titel: "Bol met licht", taak: "Teken 8 bollen. Licht komt van links. De rechterkant is donkerder. Geen harde rand om de schaduw." },
+    { id: 3, fase: "Vorm", titel: "Twee massa's", taak: "Grote ovaal, kleinere cirkel eraan vast. Tien keer. Dat is lijf en kop, zonder oren en poten." },
+    { id: 4, fase: "Kop", titel: "Oren", taak: "Cirkel met twee driehoeken als oren. Twaalf koppen. Maak de oren de ene keer spits, de andere keer wijd uit elkaar." },
+    { id: 5, fase: "Kop", titel: "Snuit", taak: "Zelfde cirkel. Zet een kleinere ovaal laag op de cirkel. Dat is de snuit. Acht keer." },
+    { id: 6, fase: "Kop", titel: "Neus en mond", taak: "Alleen de snuit, tien keer. Neus is een klein driehoekje. De mond is een Y daaronder." },
+    { id: 7, fase: "Oog", titel: "Eén oog", taak: "Eén kattenoog: amandel, pupil, één lichtstip. Acht ogen. Verander alleen het ooglid: open, half, spleet." },
+    { id: 8, fase: "Oog", titel: "Twee ogen", taak: "Twee ogen op één lijn. Zes paren. De lijn mag kantelen, de ogen blijven op die lijn." },
+    { id: 9, fase: "Gezicht", titel: "Neutraal", taak: "Eén kattenkop. Oren omhoog, ogen open, mond dicht. Alleen lijn. Geen vacht." },
+    { id: 10, fase: "Gezicht", titel: "Tevreden", taak: "Alleen de kop. Ogen half dicht, oren ontspannen, mond zacht." },
+    { id: 11, fase: "Gezicht", titel: "Boos", taak: "Alleen de kop. Oren naar achteren, ogen smal, mond strak." },
+    { id: 12, fase: "Gezicht", titel: "Bang", taak: "Alleen de kop. Ogen rond, pupillen groot, oren plat opzij." },
+    { id: 13, fase: "Gezicht", titel: "Nieuwsgierig", taak: "Alleen de kop. Oren naar voren, één oog iets wijder dan het andere." },
+    { id: 14, fase: "Gezicht", titel: "Slaperig", taak: "Alleen de kop. Ogen als spleetjes. De kop zit lager tussen de oren." },
+    { id: 15, fase: "Gezicht", titel: "Zes stemmingen", taak: "Eén blad, zes koppen: neutraal, tevreden, boos, bang, nieuwsgierig, slaperig. Geen lijf." },
+    { id: 16, fase: "Lijf", titel: "Ruglijn", taak: "Kijk naar foto's van katten. Teken alleen de ruggengraat, één kromme lijn. Vijftien lijnen, verschillende houdingen." },
+    { id: 17, fase: "Lijf", titel: "Borst en bekken", taak: "Op zo'n ruglijn: grote ovaal voor de borst, kleinere voor het bekken. Acht keer. Nog geen poten." },
+    { id: 18, fase: "Lijf", titel: "Poot", taak: "Eén poot uit twee ovalen en een rondje voor de voet. Tien poten. Gebogen, niet als een stok." },
+    { id: 19, fase: "Lijf", titel: "Poot van boven", taak: "Poot van bovenaf: vier tenen. Acht poten." },
+    { id: 20, fase: "Lijf", titel: "Poot van opzij", taak: "Poot van opzij, de hiel is zichtbaar. Zes poten." },
+    { id: 21, fase: "Lijf", titel: "Staart", taak: "Eén lijn die naar het eind dunner wordt. Tien staarten, andere bocht elke keer." },
+    { id: 22, fase: "Lijf", titel: "Nek", taak: "Kop, nek en borstkas. Zes keer. De nek is kort. Nog geen poten." },
+    { id: 23, fase: "Pose", titel: "Zitten", taak: "Kop, borst, bekken, twee voorpoten. Drie keer. Geen vacht." },
+    { id: 24, fase: "Pose", titel: "Loaf", taak: "Eén lang kussen, de kop erop, de staart eromheen. Drie keer." },
+    { id: 25, fase: "Pose", titel: "Rekken", taak: "Lange rug, schouders laag, kont hoog. Alleen de massa's. Drie keer." },
+    { id: 26, fase: "Pose", titel: "Hurken", taak: "Rug kort, achterpoten gevouwen, klaar om te springen. Drie keer." },
+    { id: 27, fase: "Pose", titel: "Op de rug", taak: "Borst naar je toe, poten los. Drie keer." },
+    { id: 28, fase: "Pose", titel: "Lopen", taak: "Eerst één lijn van de beweging. Daarna de massa's erop. Drie keer." },
+    { id: 29, fase: "Pose", titel: "Van een foto", taak: "Eén foto van een kat. Drie minuten, alleen massa's. Daarna dezelfde foto nog een keer." },
+    { id: 30, fase: "Lijn", titel: "Acht lijnen", taak: "Een zittende kat. Het lijf in hooguit acht lijnen. Ogen, neus en mond mogen preciezer dan het lijf." },
+    { id: 31, fase: "Lijn", titel: "Weghalen", taak: "Gum de helft van die lijnen weg. De kat moet nog te herkennen zijn." },
+    { id: 32, fase: "Lijn", titel: "Gezicht open lijf", taak: "Eén tekening. Ogen, neus en mond uitgewerkt. Het lijf blijft open, zonder vacht." },
+    { id: 33, fase: "Lijn", titel: "Boos en zittend", taak: "Boze kop op een zittend lijf. Het lijf in weinig lijnen." },
+    { id: 34, fase: "Lijn", titel: "Tevreden en rekken", taak: "Tevreden kop op een rekkende kat. Zelfde regel: gezicht precies, lijf zuinig." },
+    { id: 35, fase: "Lijn", titel: "Drie poses", taak: "Drie katten op één blad: zitten, loaf, rekken. Geen vachtstrepen." },
+    { id: 36, fase: "Lijn", titel: "Stilgezet", taak: "Zet een filmpje van een kat stil. Teken die stand in één minuut. Vijf keer, vijf verschillende standen." },
+    { id: 37, fase: "Kleur", titel: "Eén echte kat", taak: "Foto van één echte kat. Teken alleen de buitenlijn van de kop. Meet de afstand tussen de ogen, de hoogte van de oren en de breedte van de snuit. Schrijf de maten ernaast." },
+    { id: 38, fase: "Kleur", titel: "Herken je hem", taak: "Dezelfde kop in potlood, tot je die kat herkent. Nog geen kleur. Klopt een afstand niet, verbeter die." },
+    { id: 39, fase: "Kleur", titel: "Vier vlakken", taak: "De vlekken van die kat in vier kleuren. Niet mengen. Grote vlakken, geen haren." },
+    { id: 40, fase: "Kleur", titel: "De echte ogen", taak: "De ogen in de kleur van die kat. Eén lichtstip per oog." },
+    { id: 41, fase: "Kleur", titel: "Vacht als vlak", taak: "De vacht als kleurvlakken die de vorm volgen. Geen losse haren tekenen." },
+    { id: 42, fase: "Kleur", titel: "Af", taak: "Maak de kop af. Eén egale achtergrond. Zet de naam van de kat eronder." }
   ];
   function warmupById(id) {
     return WARMUPS.find((w) => w.id === id);

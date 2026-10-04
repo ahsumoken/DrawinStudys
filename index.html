@@ -42,7 +42,7 @@
     .collapsed .lesson-body { display:none; }
     .subcard { background:var(--bg3); border-radius:12px; padding:12px; margin-top:8px; }
     ol { padding-left:18px; margin:8px 0; }
-    nav.bottom { position:fixed; left:50%; transform:translateX(-50%); bottom:0; width:100%; max-width:480px; display:grid; grid-template-columns:repeat(7,1fr); background:#0d0d10; border-top:1px solid var(--line); padding:8px 2px calc(8px + var(--sb)); z-index:20; }
+    nav.bottom { position:fixed; left:50%; transform:translateX(-50%); bottom:0; width:100%; max-width:480px; display:grid; grid-template-columns:repeat(8,1fr); background:#0d0d10; border-top:1px solid var(--line); padding:8px 2px calc(8px + var(--sb)); z-index:20; }
     nav.bottom button { background:transparent; color:var(--muted); font-size:9px; font-weight:500; padding:8px 1px; min-height:44px; }
     nav.bottom button.on { color:var(--gold); }
     .statgrid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
@@ -127,6 +127,7 @@
   <section class="view" id="v-tracks"><div id="trackList"></div></section>
   <section class="view" id="v-pool"><ul class="plain" id="poolList"></ul></section>
   <section class="view" id="v-inkt"><div id="inktRoot"></div></section>
+  <section class="view" id="v-kat"><div id="katRoot"></div></section>
   <section class="view" id="v-bladen"><div id="bladenList"></div></section>
   <section class="view" id="v-stand">
     <div class="statgrid">
@@ -161,6 +162,7 @@
     <button data-v="vandaag" class="on">Vandaag</button>
     <button data-v="tracks">Tracks</button>
     <button data-v="inkt">Inkt</button>
+    <button data-v="kat">Kat</button>
     <button data-v="bladen">Bladen</button>
     <button data-v="pool">Pool</button>
     <button data-v="stand">Stand</button>

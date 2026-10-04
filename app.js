@@ -8,7 +8,7 @@
     activeTrack: 0, doneTracks: [], pool: D.TRACKS[0].warmupIds.slice(),
     focusIndex: 0, customFocus: "", sound: true, vib: true,
     sessions: [], lastDay: null, streak: 0, dayWarmup: null, dayWarmupDate: null,
-    inkDone: [], hatchDone: [], inkPace: "dag", doneLessons: [], ghToken: "", gistId: ""
+    inkDone: [], hatchDone: [], inkPace: "dag", doneLessons: [], catDone: [], catLook: null, ghToken: "", gistId: ""
   };
 
   function load() {
@@ -54,6 +54,7 @@
     if (name === "pool") renderPool();
     if (name === "bladen") renderBladen();
     if (name === "inkt") renderInkt();
+    if (name === "kat") renderKat();
     if (name === "stand") renderStand();
     if (name === "set") renderSet();
   }
@@ -119,6 +120,23 @@
       return '<div class="' + cls + '"><h3>' + t.id + " · " + t.naam + "</h3><p class='hint'>" + t.kort + "</p>" +
         (unlocked ? "<p>" + t.waarom + "</p><p class='hint'><span class='gold'>Drawabox.</span> " + t.dab.taak + "</p><p class='hint'><span class='gold'>Loomis.</span> " + t.loomis.taak + "</p>" : "") + btn + "</div>";
     }).join("");
+  }
+
+  function renderKat() {
+    const days = D.CATS || [];
+    const done = state.catDone || [];
+    const next = days.find((d) => done.indexOf(d.id) < 0) || days[days.length - 1];
+    const cur = days.find((d) => d.id === state.catLook) || next;
+    const n = done.filter((id) => days.some((d) => d.id === id)).length;
+    const list = days.map((d) => {
+      const on = done.indexOf(d.id) >= 0;
+      return '<button type="button" class="inkday' + (d.id === cur.id ? " on" : "") + (on ? " done" : "") + '" data-cat-look="' + d.id + '"><b>' + d.id + '</b><span>' + d.titel + '</span></button>';
+    }).join("");
+    $("katRoot").innerHTML =
+      '<p class="hint">Eerst losse vormen, dan de kop, dan het lijf, dan één echte kat in kleur. ' + n + " van " + days.length + ".</p>" +
+      '<div class="card"><p class="gold">' + cur.fase + " · dag " + cur.id + '</p><h2 style="font-size:36px;line-height:1.05;margin:6px 0">' + cur.titel + "</h2><p>" + cur.taak + '</p>' +
+      '<button type="button" class="wide" data-cat="' + cur.id + '">' + (done.indexOf(cur.id) >= 0 ? "Afgevinkt" : "Klaar") + "</button></div>" +
+      '<details style="margin-top:12px"><summary class="hint" style="cursor:pointer;min-height:44px">Alle dagen</summary>' + list + "</details>";
   }
 
   function renderInkt() {
@@ -248,7 +266,7 @@
             body: JSON.stringify({
               description: "BLOK afgevinkt",
               public: false,
-              files: { "blok.json": { content: JSON.stringify({ doneLessons: state.doneLessons || [] }) } }
+              files: { "blok.json": { content: JSON.stringify({ doneLessons: state.doneLessons || [], catDone: state.catDone || [] }) } }
             })
           });
           if (!made.ok) return false;
@@ -265,6 +283,7 @@
       if (file && file.content) {
         const data = JSON.parse(file.content);
         if (Array.isArray(data.doneLessons)) state.doneLessons = data.doneLessons;
+        if (Array.isArray(data.catDone)) state.catDone = data.catDone;
       }
       save();
       return true;
@@ -275,7 +294,7 @@
     fetch("https://api.github.com/gists/" + state.gistId, {
       method: "PATCH",
       headers: Object.assign({ "Content-Type": "application/json" }, ghHeaders()),
-      body: JSON.stringify({ files: { "blok.json": { content: JSON.stringify({ doneLessons: state.doneLessons || [] }) } } })
+      body: JSON.stringify({ files: { "blok.json": { content: JSON.stringify({ doneLessons: state.doneLessons || [], catDone: state.catDone || [] }) } } })
     }).catch(() => {});
   }
 
@@ -291,6 +310,20 @@
   document.body.addEventListener("click", (e) => {
     const nav = e.target.closest("nav.bottom button");
     if (nav) { show(nav.dataset.v); return; }
+    const look = e.target.closest("[data-cat-look]");
+    if (look) { state.catLook = Number(look.getAttribute("data-cat-look")); renderKat(); return; }
+    const cat = e.target.closest("[data-cat]");
+    if (cat) {
+      const id = Number(cat.getAttribute("data-cat"));
+      state.catDone = state.catDone || [];
+      const i = state.catDone.indexOf(id);
+      if (i >= 0) state.catDone.splice(i, 1);
+      else { state.catDone.push(id); state.catLook = null; }
+      save();
+      renderKat();
+      pushGist();
+      return;
+    }
     const chk = e.target.closest("[data-check]");
     if (chk) {
       const id = chk.getAttribute("data-check");
@@ -384,7 +417,7 @@
   };
   $("btnReset").onclick = () => {
     if (!confirm("Stats en afgevinkte lessen wissen? Tracks en pool blijven.")) return;
-    state.sessions = []; state.streak = 0; state.lastDay = null; state.doneLessons = []; save(); pushGist(); renderStand(); renderToday();
+    state.sessions = []; state.streak = 0; state.lastDay = null; state.doneLessons = []; state.catDone = []; state.catLook = null; save(); pushGist(); renderStand(); renderToday();
   };
   $("btnPrintBack").onclick = () => $("printView").classList.remove("on");
   $("btnDoPrint").onclick = () => window.print();
