@@ -1,9 +1,10 @@
-const CACHE = "blok-v17";
+const CACHE = "blok-v18";
 const ASSETS = [
   "./",
   "./index.html",
   "./app.js",
   "./data.js",
+  "./kat.js",
   "./sheets.js",
   "./manifest.json",
   "./icon-192.png",
