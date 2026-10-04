@@ -21,26 +21,34 @@ window.KAT = (function () {
   }
   function ears(x, y, s, back) {
     if (back) {
-      return P("M" + (x - 28 * s) + " " + (y - 6 * s) + " l" + (-18 * s) + " " + (6 * s), 2.4) +
-        P("M" + (x + 28 * s) + " " + (y - 6 * s) + " l" + (18 * s) + " " + (6 * s), 2.4);
+      return P("M" + (x - 24 * s) + " " + y + " l" + (-20 * s) + " " + (6 * s) + " l" + (16 * s) + " " + (8 * s), 1.8) +
+        P("M" + (x + 24 * s) + " " + y + " l" + (20 * s) + " " + (6 * s) + " l" + (-16 * s) + " " + (8 * s), 1.8);
     }
-    return P("M" + (x - 22 * s) + " " + (y - 8 * s) + " l" + (-8 * s) + " " + (-28 * s) + " l" + (16 * s) + " " + (22 * s), 2.2) +
-      P("M" + (x + 22 * s) + " " + (y - 8 * s) + " l" + (8 * s) + " " + (-28 * s) + " l" + (-16 * s) + " " + (22 * s), 2.2);
+    return '<polygon points="' + (x - 16 * s) + "," + (y - 6 * s) + " " + (x - 22 * s) + "," + (y - 40 * s) + " " + (x - 2 * s) + "," + (y - 8 * s) + '" fill="none" stroke="#1c1c1c" stroke-width="1.6" stroke-linejoin="round"/>' +
+      '<polygon points="' + (x + 16 * s) + "," + (y - 6 * s) + " " + (x + 22 * s) + "," + (y - 40 * s) + " " + (x + 2 * s) + "," + (y - 8 * s) + '" fill="none" stroke="#1c1c1c" stroke-width="1.6" stroke-linejoin="round"/>';
   }
   function face(x, y, s, mood) {
-    var lid = "open", mouth = "M" + (x - 6 * s) + " " + (y + 22 * s) + " q" + (6 * s) + " " + (6 * s) + " " + (12 * s) + " 0";
-    var back = false, dy = 0;
-    if (mood === "tevreden") { lid = "half"; mouth = "M" + (x - 8 * s) + " " + (y + 24 * s) + " q" + (8 * s) + " " + (8 * s) + " " + (16 * s) + " 0"; }
-    if (mood === "boos") { lid = "smal"; back = true; mouth = "M" + (x - 8 * s) + " " + (y + 26 * s) + " l" + (16 * s) + " 0"; }
-    if (mood === "bang") { lid = "rond"; back = true; }
-    if (mood === "nieuw") { lid = "open"; }
-    if (mood === "slaap") { lid = "spleet"; dy = 8 * s; }
-    var y2 = y + dy;
-    var fur = P("M" + (x - 40 * s) + " " + y2 + " q 20 " + (-30 * s) + " 40 0 q 20 " + (30 * s) + " 40 0", 7 * s, 0.35) +
-      P("M" + (x - 36 * s) + " " + (y2 + 8 * s) + " q 18 " + (-18 * s) + " 36 0 q 16 " + (22 * s) + " 34 2", 5 * s, 0.28);
-    var eyes = eye(x - 14 * s, y2 - 2 * s, s, lid) + eye(x + 14 * s, y2 - 2 * s, s, mood === "nieuw" ? "rond" : lid);
-    var nose = '<polygon points="' + x + "," + (y2 + 12 * s) + " " + (x - 5 * s) + "," + (y2 + 18 * s) + " " + (x + 5 * s) + "," + (y2 + 18 * s) + '" fill="#1c1c1c"/>';
-    return fur + ears(x, y2, s, back) + eyes + nose + P(mouth, 1.8);
+    var lid = "open";
+    var flat = false;
+    var mouth = "M" + (x - 7 * s) + " " + (y + 20 * s) + " q" + (7 * s) + " " + (6 * s) + " " + (14 * s) + " 0";
+    if (mood === "tevreden") { lid = "half"; mouth = "M" + (x - 8 * s) + " " + (y + 18 * s) + " q" + (8 * s) + " " + (9 * s) + " " + (16 * s) + " 0"; }
+    if (mood === "boos") { lid = "smal"; flat = true; mouth = "M" + (x - 8 * s) + " " + (y + 22 * s) + " l" + (16 * s) + " 0"; }
+    if (mood === "bang") { lid = "rond"; flat = true; }
+    if (mood === "nieuw") { lid = "rond"; }
+    if (mood === "slaap") { lid = "spleet"; }
+    var sw = Math.max(1.5, 1.7 * s);
+    var ear = flat
+      ? ears(x, y - 4 * s, s, true)
+      : '<polygon points="' + (x - 18 * s) + "," + (y - 12 * s) + " " + (x - 26 * s) + "," + (y - 52 * s) + " " + (x - 2 * s) + "," + (y - 18 * s) + '" fill="#f7f4ee" stroke="#1c1c1c" stroke-width="' + sw + '" stroke-linejoin="round"/>' +
+        '<polygon points="' + (x + 18 * s) + "," + (y - 12 * s) + " " + (x + 26 * s) + "," + (y - 52 * s) + " " + (x + 2 * s) + "," + (y - 18 * s) + '" fill="#f7f4ee" stroke="#1c1c1c" stroke-width="' + sw + '" stroke-linejoin="round"/>';
+    var head = '<ellipse cx="' + x + '" cy="' + (y + 6 * s) + '" rx="' + (34 * s) + '" ry="' + (30 * s) + '" fill="#f7f4ee" stroke="#1c1c1c" stroke-width="' + sw + '"/>';
+    var eyes = eye(x - 13 * s, y + 1 * s, s * 0.62, lid) + eye(x + 13 * s, y + 1 * s, s * 0.62, lid);
+    var nose = '<polygon points="' + x + "," + (y + 12 * s) + " " + (x - 4 * s) + "," + (y + 17 * s) + " " + (x + 4 * s) + "," + (y + 17 * s) + '" fill="#1c1c1c"/>';
+    var whisk = P("M" + (x - 6 * s) + " " + (y + 18 * s) + " l" + (-26 * s) + " -4", 1.1) +
+      P("M" + (x - 6 * s) + " " + (y + 21 * s) + " l" + (-26 * s) + " 5", 1.1) +
+      P("M" + (x + 6 * s) + " " + (y + 18 * s) + " l" + (26 * s) + " -4", 1.1) +
+      P("M" + (x + 6 * s) + " " + (y + 21 * s) + " l" + (26 * s) + " 5", 1.1);
+    return ear + head + eyes + nose + P(mouth, 1.5) + whisk;
   }
   function repeat(n, fn) {
     var o = "", i;
@@ -50,38 +58,36 @@ window.KAT = (function () {
   function pose(x, y, kind, mood) {
     mood = mood || "neutraal";
     if (kind === "zit") {
-      return P("M" + x + " " + (y + 70) + " q -10 -40 10 -70 q 30 -20 20 10", 16, 0.85) +
-        P("M" + (x + 8) + " " + (y + 20) + " q 8 30 4 50", 8, 0.7) +
-        face(x + 6, y - 10, 0.55, mood) +
-        P("M" + (x + 20) + " " + (y + 40) + " q 40 -30 70 -10", 6, 0.6);
+      return E(x, y + 58, 34, 42) +
+        P("M" + (x - 12) + " " + (y + 92) + " l -4 24 M" + (x + 12) + " " + (y + 92) + " l 6 24", 2) +
+        P("M" + (x + 24) + " " + (y + 40) + " q 50 -16 36 34", 2) +
+        face(x, y + 4, 0.72, mood);
     }
     if (kind === "loaf") {
-      return P("M" + (x - 50) + " " + (y + 30) + " q 40 -28 120 -8 q 40 10 20 18 q -60 20 -140 0 z", 1, 0) +
-        '<path d="M' + (x - 50) + " " + (y + 30) + ' q 40 -28 120 -8 q 40 10 20 18 q -60 20 -140 0 z" fill="#1c1c1c" opacity="0.78"/>' +
-        face(x + 70, y - 8, 0.5, "tevreden") +
-        P("M" + (x - 40) + " " + (y + 36) + " q 20 16 10 8", 5);
+      return E(x + 10, y + 36, 70, 26) +
+        face(x + 62, y + 2, 0.62, "tevreden") +
+        P("M" + (x - 48) + " " + (y + 30) + " q -16 8 -6 16", 2);
     }
     if (kind === "rek") {
-      return P("M" + (x - 70) + " " + (y + 40) + " q 40 -50 90 -20 q 50 10 80 36", 18, 0.88) +
-        P("M" + (x - 60) + " " + (y + 55) + " l 30 20 M" + (x + 70) + " " + (y + 50) + " l 10 28", 7) +
-        P("M" + (x + 90) + " " + (y + 10) + " q 20 -40 10 -70 q 16 20 8 50", 10, 0.75) +
-        face(x - 55, y + 10, 0.48, "tevreden");
+      return E(x + 10, y + 36, 78, 18) +
+        P("M" + (x - 50) + " " + (y + 48) + " l 8 22 M" + (x + 60) + " " + (y + 46) + " l 6 22", 2) +
+        P("M" + (x + 70) + " " + (y + 20) + " q 10 -36 4 -8", 2) +
+        face(x - 62, y + 16, 0.55, "tevreden");
     }
     if (kind === "hurk") {
-      return P("M" + (x - 40) + " " + (y + 40) + " q 20 -46 70 -30 q 10 20 -10 36", 16, 0.86) +
-        P("M" + (x + 20) + " " + (y + 30) + " q 16 10 8 28", 8) +
-        face(x + 36, y - 8, 0.5, "nieuw") +
-        P("M" + (x - 30) + " " + (y + 20) + " q -20 -10 -10 20", 6);
+      return E(x, y + 40, 36, 22) +
+        P("M" + (x - 16) + " " + (y + 54) + " l -6 18 M" + (x + 10) + " " + (y + 56) + " l 4 18", 2) +
+        face(x + 28, y + 6, 0.58, "nieuw");
     }
     if (kind === "rug") {
-      return P("M" + x + " " + y + " q -30 20 -10 50 q 40 10 70 -10 q 10 -30 -20 -40", 16, 0.8) +
-        P("M" + (x - 10) + " " + (y + 10) + " l -16 -20 M" + (x + 20) + " " + (y + 6) + " l 10 -24 M" + (x + 40) + " " + (y + 20) + " l 18 -16", 5) +
-        face(x + 10, y + 28, 0.42, "tevreden");
+      return E(x + 16, y + 24, 40, 28) +
+        P("M" + (x - 8) + " " + (y + 8) + " l -14 -22 M" + (x + 18) + " " + (y + 4) + " l 6 -24 M" + (x + 36) + " " + (y + 12) + " l 16 -16", 2) +
+        P("M" + (x + 40) + " " + (y + 20) + " q 24 8 10 22", 2);
     }
-    return P("M" + (x - 60) + " " + (y + 20) + " q 40 -30 80 -8 q 40 16 70 4", 14, 0.85) +
-      P("M" + (x - 40) + " " + (y + 28) + " l 6 26 M" + (x + 10) + " " + (y + 24) + " l -4 30 M" + (x + 50) + " " + (y + 22) + " l 8 28", 6) +
-      face(x + 78, y - 6, 0.45, mood) +
-      P("M" + (x - 55) + " " + (y + 16) + " q -20 10 -10 24", 5);
+    return E(x, y + 24, 64, 20) +
+      P("M" + (x - 30) + " " + (y + 38) + " l 4 22 M" + (x + 8) + " " + (y + 40) + " l -2 22 M" + (x + 36) + " " + (y + 36) + " l 6 22", 2) +
+      face(x + 62, y + 2, 0.55, mood) +
+      P("M" + (x - 58) + " " + (y + 16) + " q -18 6 -8 18", 2);
   }
   function sheet(n) {
     var g = "", i, x, y;
