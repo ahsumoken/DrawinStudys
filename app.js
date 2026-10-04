@@ -133,7 +133,7 @@
       return '<button type="button" class="inkday' + (d.id === cur.id ? " on" : "") + (on ? " done" : "") + '" data-cat-look="' + d.id + '"><b>' + d.id + '</b><span>' + d.titel + '</span></button>';
     }).join("");
     $("katRoot").innerHTML =
-      '<p class="hint">Eerst losse vormen, dan de kop, dan het lijf, dan één echte kat in kleur. ' + n + " van " + days.length + ".</p>" +
+      '<p class="hint"><a class="les" href="https://payhip.com/scoopofsun/collection/free-art-study-pdfs" target="_blank" rel="noopener">Gratis werkboeken</a>. Daarna de kop, het lijf, één echte kat in kleur. ' + n + " van " + days.length + ".</p>" +
       '<div class="card"><p class="gold">' + cur.fase + " · dag " + cur.id + '</p><h2 style="font-size:36px;line-height:1.05;margin:6px 0">' + cur.titel + '</h2><img class="katfig" alt="" src="./kat/' + cur.plaat + '"><p>' + cur.taak + '</p>' +
       '<button type="button" class="wide" data-cat="' + cur.id + '">' + (done.indexOf(cur.id) >= 0 ? "Afgevinkt" : "Klaar") + "</button></div>" +
       '<details style="margin-top:12px"><summary class="hint" style="cursor:pointer;min-height:44px">Alle dagen</summary>' + list + "</details>";
