@@ -1,4 +1,4 @@
-const CACHE = "blok-v14";
+const CACHE = "blok-v15";
 const ASSETS = [
   "./",
   "./index.html",
@@ -8,7 +8,16 @@ const ASSETS = [
   "./manifest.json",
   "./icon-192.png",
   "./icon-512.png",
-  "./favicon.svg"
+  "./favicon.svg",
+  "./kat/vorm.jpg",
+  "./kat/oren.jpg",
+  "./kat/snuit.jpg",
+  "./kat/ogen.jpg",
+  "./kat/gezichten.jpg",
+  "./kat/lijf.jpg",
+  "./kat/poses.jpg",
+  "./kat/lijn.jpg",
+  "./kat/kleur.jpg"
 ];
 
 self.addEventListener("install", (event) => {
