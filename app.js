@@ -134,7 +134,7 @@
     }).join("");
     $("katRoot").innerHTML =
       '<p class="hint"><a class="les" href="https://payhip.com/scoopofsun/collection/free-art-study-pdfs" target="_blank" rel="noopener">Vormen en dieren, gratis pdf</a> · <a class="les" href="https://shop.shouxin-art.com/" target="_blank" rel="noopener">Losse katten</a> · <a class="les" href="https://sampaineart.com/" target="_blank" rel="noopener">Gekleurd portret</a>. ' + n + " van " + days.length + ".</p>" +
-      '<div class="card"><p class="gold">' + cur.fase + " · dag " + cur.id + '</p><h2 style="font-size:36px;line-height:1.05;margin:6px 0">' + cur.titel + '</h2><div class="katfig">' + (window.KAT ? KAT.sheet(cur.id) : "") + '</div><p>' + cur.taak + '</p>' +
+      '<div class="card"><p class="gold">' + cur.fase + " · dag " + cur.id + '</p><h2 style="font-size:36px;line-height:1.05;margin:6px 0">' + cur.titel + '</h2><p>' + cur.taak + '</p>' +
       '<button type="button" class="wide" data-cat="' + cur.id + '">' + (done.indexOf(cur.id) >= 0 ? "Afgevinkt" : "Klaar") + "</button></div>" +
       '<details style="margin-top:12px"><summary class="hint" style="cursor:pointer;min-height:44px">Alle dagen</summary>' + list + "</details>";
   }
